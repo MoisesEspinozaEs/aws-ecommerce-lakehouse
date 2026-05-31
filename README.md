@@ -52,9 +52,14 @@ So I split the difference with a lakehouse. Streaming gets the raw events in fas
 
 ## Architecture
 
-The diagram shows the full target design. Solid boxes are what I deployed and
-verified on AWS. Dashed boxes are reference code in this repo for the streaming
-and orchestration extensions (see [What is deployed vs reference](#what-is-deployed-vs-reference)).
+Clickstream and order changes land in S3, get sessionized and conformed by Glue (Spark) into Apache Iceberg, modeled into gold marts with dbt, and served through Athena and a Streamlit dashboard.
+
+![Architecture](docs/diagrams/architecture.png)
+
+The editable source for this diagram is [`docs/diagrams/architecture.drawio`](docs/diagrams/architecture.drawio), built with draw.io and official AWS icons. See [What is deployed vs reference](#what-is-deployed-vs-reference) for which parts I actually deployed.
+
+<details>
+<summary>Same diagram as Mermaid (versionable text)</summary>
 
 ```mermaid
 flowchart LR
@@ -83,12 +88,9 @@ flowchart LR
 
     MWAA[Airflow - MWAA] -.orchestrates.-> G
     MWAA -.orchestrates.-> D
-
-    classDef deployed fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20;
-    classDef reference fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5,color:#616161;
-    class A,S3B,G,S3S,D,S3G,AT deployed;
-    class B,K,DMS,F,FH,MWAA,BI reference;
 ```
+
+</details>
 
 ### What is deployed vs reference
 
