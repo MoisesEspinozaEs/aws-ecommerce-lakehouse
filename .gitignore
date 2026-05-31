@@ -1,0 +1,35 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+crash.log
+*.tfvars
+override.tf
+override.tf.json
+.terraform.lock.hcl
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# dbt
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+dbt/.user.yml
+
+# Credentials and secrets (never commit these)
+.aws/
+credentials
+*.pem
+*.key
+secrets.*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

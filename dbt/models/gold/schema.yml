@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: silver
+    schema: ecomlake_silver
+    tables:
+      - name: sessions
+        loaded_at_field: session_end
+        freshness:
+          warn_after: { count: 6, period: hour }
+          error_after: { count: 24, period: hour }
+
+models:
+  - name: daily_revenue
+    description: Daily revenue, conversion and traffic by category and channel.
+    columns:
+      - name: activity_date
+        tests: [not_null]
+      - name: revenue
+        description: Total revenue for the day and category. Must never be negative.
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: conversion_rate
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 1

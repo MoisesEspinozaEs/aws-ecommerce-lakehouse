@@ -1,0 +1,16 @@
+name: ecomlake
+version: "1.0.0"
+config-version: 2
+
+profile: ecomlake
+
+model-paths: ["models"]
+
+# Silver is built by the Glue job. dbt owns gold only, as Iceberg tables on Athena.
+# The schema is set in profiles.yml (ecomlake_gold); we don't add a per-folder
+# +schema here, otherwise dbt concatenates them into ecomlake_gold_gold.
+models:
+  ecomlake:
+    gold:
+      +materialized: table
+      +table_type: iceberg

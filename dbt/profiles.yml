@@ -1,0 +1,13 @@
+# dbt connection to Athena. Run dbt with: dbt build --profiles-dir .
+# LAKE_BUCKET comes from the environment (set it from the terraform output).
+ecomlake:
+  target: dev
+  outputs:
+    dev:
+      type: athena
+      s3_staging_dir: "s3://{{ env_var('LAKE_BUCKET') }}/athena-results/"
+      region_name: "{{ env_var('AWS_REGION', 'us-east-1') }}"
+      database: awsdatacatalog
+      schema: ecomlake_gold
+      work_group: ecomlake-dev
+      threads: 4

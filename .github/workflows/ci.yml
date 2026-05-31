@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Terraform format and validate
+        working-directory: infra
+        run: |
+          terraform fmt -check -recursive
+          terraform init -backend=false
+          terraform validate
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python tooling
+        run: pip install -r requirements.txt
+
+      - name: dbt parse (compile-time checks, no warehouse needed)
+        working-directory: dbt
+        env:
+          LAKE_BUCKET: dummy-bucket-for-parse
+          DBT_PROFILES_DIR: .
+        run: |
+          dbt deps
+          dbt parse
